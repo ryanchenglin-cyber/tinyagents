@@ -235,7 +235,9 @@ fn corrupt_zip_payloads_and_gzip_trailers_are_errors() {
         .unwrap()
         .by_index(0)
         .unwrap()
-        .data_start() as usize;
+        .data_start()
+        .expect("an entry read from the archive knows where its data starts")
+        as usize;
     bytes[start] ^= 0xff;
     assert!(inspect_archive(&bytes, ArchiveFormat::Zip, &ArchiveLimits::default()).is_err());
     let mut encoder = flate2::write::GzEncoder::new(Vec::new(), flate2::Compression::default());
